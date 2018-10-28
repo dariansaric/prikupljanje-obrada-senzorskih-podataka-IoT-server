@@ -1,20 +1,44 @@
 package darian.saric.rasus.model;
 
-import java.util.List;
-
 /**
  * Ovaj razred predstavlja podatke o registriranim senzorima:
- *  - identifikator senzora
- *  - geolokacija senzora
- *  - sva zapisana mjerenja senzora
+ * - identifikator senzora
+ * - geolokacija senzora
+ * - sva zapisana mjerenja senzora
  */
 public class Sensor {
     // TODO: dopuni model senzora
-    //id
-    //geolokacija
-    private List<Measurement> measurements;
+    private String username;
+    private double latitude;
+    private double longitude;
+    private String ip;
+    private int port;
 
-    public List<Measurement> getMeasurements() {
-        return measurements;
+    public Sensor(String username, double latitude, double longitude, String ip, int port) {
+        this.username = username;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.ip = ip;
+        this.port = port;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public int getPort() {
+        return port;
     }
 }
