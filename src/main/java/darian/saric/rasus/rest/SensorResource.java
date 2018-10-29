@@ -1,5 +1,6 @@
 package darian.saric.rasus.rest;
 
+import darian.saric.rasus.model.Measurement;
 import darian.saric.rasus.model.Sensor;
 import darian.saric.rasus.model.Storage;
 import org.json.JSONObject;
@@ -9,15 +10,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Objects;
 
-import static darian.saric.rasus.model.Storage.registerSensor;
+import static darian.saric.rasus.model.Storage.*;
 
 /**
  * Root resource (exposed at "myresource" path)
  */
 @Path("sensor")
 public class SensorResource {
-    // TODO: pospremi mejerenje
-
     /**
      * Registrira novi senzor kao aktivan. Kao parametar prima podatke o senzoru u JSON formatu.
      *
@@ -53,6 +52,19 @@ public class SensorResource {
 //        throw new UnsupportedOperationException();
     }
 
+    @Path("/{username}")
+    @DELETE
+    public Response deregisterNewSensor(@PathParam("username") final String username) {
+        Sensor s = getSensorForName(username);
+
+        if (s == null) {
+            return Response.status(404).build();
+        }
+
+        deregisterSensor(s);
+        return Response.status(200).build();
+    }
+
     /**
      * Vraća podatke o senzoru koji je geografski najbliže senzoru s predanim imenom.
      *
@@ -69,12 +81,29 @@ public class SensorResource {
 
     }
 
-//    @Path("/{username}/measure")
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Response postMeasurement(@PathParam("username") final String username, final String jsonInput) {
-//        // tODO: implementiraj postMeasurement
-//        throw new UnsupportedOperationException();
-//    }
+    @Path("/{username}/measure")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postMeasurement(@PathParam("username") final String username, final String jsonInput) {
+        boolean status = false;
+        Sensor s = getSensorForName(username);
+        if (s == null) {
+            return Response.status(200).entity(JSONObject.wrap(status)).build();
+        }
+
+        try {
+            JSONObject object = new JSONObject(jsonInput);
+            Measurement m = new Measurement(
+                    object.getString("parameter"),
+                    object.getDouble("value"));
+
+            status = storeMeasurement(username, m);
+        } catch (Exception e) {
+            //neispravan json mjerenja
+            return Response.status(200).entity(JSONObject.wrap(status)).build();
+        }
+
+        return Response.status(200).entity(JSONObject.wrap(status)).build();
+    }
 }

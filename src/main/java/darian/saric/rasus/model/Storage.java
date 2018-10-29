@@ -69,15 +69,17 @@ public class Storage {
 
     public static boolean deregisterSensor(String username) {
         //trebat ce za kasnije
-        return sensorSet.remove(getSensorForName(username));
+        return deregisterSensor(getSensorForName(username));
+    }
+
+    public static boolean deregisterSensor(Sensor s) {
+        return sensorSet.remove(s);
     }
 
     public static boolean storeMeasurement(String username, Measurement measurement) {
-        List<Measurement> list = measurementMap.get(username);
-        if (list == null) {
-            list = new LinkedList<>();
-        }
+        List<Measurement> list = measurementMap.computeIfAbsent(username, k -> new LinkedList<>());
         list.add(measurement);
+
         return true;
     }
 }

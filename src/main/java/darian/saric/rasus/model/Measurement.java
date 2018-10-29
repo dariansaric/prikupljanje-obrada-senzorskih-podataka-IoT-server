@@ -5,5 +5,19 @@ package darian.saric.rasus.model;
  */
 public class Measurement {
     // TODO: opiši razred
-    //podaci o mjerenju
+    private String parameter;
+    private double value;
+
+    public Measurement(String parameter, double value) {
+        this.parameter = parameter;
+        this.value = value;
+    }
+
+    public String getParameter() {
+        return parameter;
+    }
+
+    public double getValue() {
+        return value;
+    }
 }
