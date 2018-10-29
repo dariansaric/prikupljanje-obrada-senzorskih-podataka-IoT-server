@@ -1,11 +1,15 @@
 package darian.saric.rasus.rest;
 
 import darian.saric.rasus.model.Sensor;
+import darian.saric.rasus.model.Storage;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Objects;
+
+import static darian.saric.rasus.model.Storage.registerSensor;
 
 /**
  * Root resource (exposed at "myresource" path)
@@ -23,12 +27,12 @@ public class SensorResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerNewSensor(final String jsonInput) {
+        boolean status = false;
         if (jsonInput == null) {
             //nije predan JSON
-            return Response.status(200).entity(JSONObject.wrap(false)).build();
+            return Response.status(200).entity(JSONObject.wrap(status)).build();
         }
 
-        // TODO: pohrani senzor
         try {
             JSONObject object = new JSONObject(jsonInput);
             Sensor sensor = new Sensor(
@@ -38,14 +42,15 @@ public class SensorResource {
                     object.getString("ip"),
                     object.getInt("port"));
 
-            System.out.println("Dodan senzor: " + sensor.getUsername());
+            status = registerSensor(sensor);
+
         } catch (Exception e) {
             // predan neispravan JSON
-            return Response.status(200).entity(JSONObject.wrap(false)).build();
+            return Response.status(200).entity(JSONObject.wrap(status)).build();
         }
 
-//        return Response.status(200).entity(JSONObject.wrap(true)).build();
-        throw new UnsupportedOperationException();
+        return Response.status(200).entity(JSONObject.wrap(status)).build();
+//        throw new UnsupportedOperationException();
     }
 
     /**
@@ -59,16 +64,17 @@ public class SensorResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getClosestSensor(@PathParam("username") final String username) {
-        // TODO: implementiraj getClosestSensor
-        throw new UnsupportedOperationException();
+        Sensor s = Storage.getClosestSensor(username);
+        return Response.status(200).entity(Objects.requireNonNullElse(s, null)).build();
+
     }
 
-    @Path("/{username}/measure")
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response postMeasurement(@PathParam("username") final String username, final String jsonInput) {
-        // tODO: implementiraj postMeasurement
-        throw new UnsupportedOperationException();
-    }
+//    @Path("/{username}/measure")
+//    @POST
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response postMeasurement(@PathParam("username") final String username, final String jsonInput) {
+//        // tODO: implementiraj postMeasurement
+//        throw new UnsupportedOperationException();
+//    }
 }

@@ -7,7 +7,7 @@
     <description>Poslužitelj koji čuva podatke o registriranim senzorima i njihovim mjerenjima</description>
      <!--TODO: Napiši server-->
     <servlet>
-        <servlet-name>Jersey Servlet</servlet-name>
+        <servlet-name>rest</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
@@ -16,7 +16,7 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Jersey Servlet</servlet-name>
+        <servlet-name>rest</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
 </web-app>
