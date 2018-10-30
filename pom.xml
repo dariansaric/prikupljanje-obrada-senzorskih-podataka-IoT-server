@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>darian.saric.rasus</groupId>
-    <artifactId>hw01</artifactId>
+    <artifactId>hw01-posluzitelj</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>hw01</name>
