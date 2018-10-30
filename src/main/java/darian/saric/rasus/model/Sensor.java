@@ -1,5 +1,7 @@
 package darian.saric.rasus.model;
 
+import java.util.Objects;
+
 /**
  * Ovaj razred predstavlja podatke o registriranim senzorima:
  * - identifikator senzora
@@ -7,7 +9,17 @@ package darian.saric.rasus.model;
  * - sva zapisana mjerenja senzora
  */
 public class Sensor {
-    // TODO: dopuni model senzora
+    @Override
+    public String toString() {
+        return "Sensor{" +
+                "username='" + username + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", ip='" + ip + '\'' +
+                ", port=" + port +
+                '}';
+    }
+
     private String username;
     private double latitude;
     private double longitude;
@@ -40,5 +52,22 @@ public class Sensor {
 
     public int getPort() {
         return port;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sensor sensor = (Sensor) o;
+        return Double.compare(sensor.latitude, latitude) == 0 &&
+                Double.compare(sensor.longitude, longitude) == 0 &&
+                port == sensor.port &&
+                Objects.equals(username, sensor.username) &&
+                Objects.equals(ip, sensor.ip);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, latitude, longitude, ip, port);
     }
 }

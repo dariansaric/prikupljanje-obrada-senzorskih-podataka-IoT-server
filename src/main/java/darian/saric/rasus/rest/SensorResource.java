@@ -3,6 +3,8 @@ package darian.saric.rasus.rest;
 import darian.saric.rasus.model.Measurement;
 import darian.saric.rasus.model.Sensor;
 import darian.saric.rasus.model.Storage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
@@ -17,6 +19,8 @@ import static darian.saric.rasus.model.Storage.*;
  */
 @Path("sensor")
 public class SensorResource {
+    private static final Logger LOGGER = LogManager.getLogger(SensorResource.class);
+
     /**
      * Registrira novi senzor kao aktivan. Kao parametar prima podatke o senzoru u JSON formatu.
      *
@@ -29,9 +33,11 @@ public class SensorResource {
         boolean status = false;
         if (jsonInput == null) {
             //nije predan JSON
+            LOGGER.info("POST /central/sensor - \"\"");
             return Response.status(200).entity(JSONObject.wrap(status)).build();
         }
 
+        LOGGER.info("POST /central/sensor - " + jsonInput);
         try {
             JSONObject object = new JSONObject(jsonInput);
             Sensor sensor = new Sensor(
@@ -42,9 +48,11 @@ public class SensorResource {
                     object.getInt("port"));
 
             status = registerSensor(sensor);
+            LOGGER.info((status ? "U" : "Neu") + "spješno registriran " + sensor);
 
         } catch (Exception e) {
             // predan neispravan JSON
+            LOGGER.info(String.format("Neispravni podaci senzora: %s", jsonInput));
             return Response.status(200).entity(JSONObject.wrap(status)).build();
         }
 
@@ -55,13 +63,16 @@ public class SensorResource {
     @Path("/{username}")
     @DELETE
     public Response deregisterNewSensor(@PathParam("username") final String username) {
+        LOGGER.info("GET /central/sensor/" + username);
         Sensor s = getSensorForName(username);
 
         if (s == null) {
+            LOGGER.info("Ne postoji registriran senzor imena '" + username + "'");
             return Response.status(404).build();
         }
 
         deregisterSensor(s);
+        LOGGER.info(String.format("Uspješno deregistriran %s", s));
         return Response.status(200).build();
     }
 
@@ -76,7 +87,9 @@ public class SensorResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getClosestSensor(@PathParam("username") final String username) {
+        LOGGER.info(String.format("GET /central/sensor/%s", username));
         Sensor s = Storage.getClosestSensor(username);
+        LOGGER.info(String.format("Najbliži senzor senzoru %s je %s", username, s == null ? "<null>" : s));
         return Response.status(200).entity(Objects.requireNonNullElse(s, null)).build();
 
     }
@@ -86,9 +99,11 @@ public class SensorResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postMeasurement(@PathParam("username") final String username, final String jsonInput) {
+        LOGGER.info(String.format("POST /central/sensor/%s/measure %s", username, jsonInput));
         boolean status = false;
         Sensor s = getSensorForName(username);
         if (s == null) {
+            LOGGER.info("Ne postoji registriran senzor imena '" + username + "'");
             return Response.status(200).entity(JSONObject.wrap(status)).build();
         }
 
@@ -99,8 +114,10 @@ public class SensorResource {
                     object.getDouble("value"));
 
             status = storeMeasurement(username, m);
+            LOGGER.info(String.format("Uspješno pohranjeno mjerenje %s za senzor %s", m, username));
         } catch (Exception e) {
             //neispravan json mjerenja
+            LOGGER.info(String.format("Neispravni podaci mjerenja: %s", jsonInput));
             return Response.status(200).entity(JSONObject.wrap(status)).build();
         }
 
