@@ -34,7 +34,7 @@ public class SensorResource {
         if (jsonInput == null) {
             //nije predan JSON
             LOGGER.info("POST /central/sensor - \"\"");
-            return Response.status(200).entity(JSONObject.wrap(status)).build();
+            return Response.status(200).entity(status).build();
         }
 
         LOGGER.info("POST /central/sensor - " + jsonInput);
@@ -53,10 +53,10 @@ public class SensorResource {
         } catch (Exception e) {
             // predan neispravan JSON
             LOGGER.info(String.format("Neispravni podaci senzora: %s", jsonInput));
-            return Response.status(200).entity(JSONObject.wrap(status)).build();
+            return Response.status(200).entity(status).build();
         }
 
-        return Response.status(200).entity(JSONObject.wrap(status)).build();
+        return Response.status(200).entity(status).build();
 //        throw new UnsupportedOperationException();
     }
 
@@ -90,7 +90,7 @@ public class SensorResource {
         LOGGER.info(String.format("GET /central/sensor/%s", username));
         Sensor s = Storage.getClosestSensor(username);
         LOGGER.info(String.format("Najbliži senzor senzoru %s je %s", username, s == null ? "<null>" : s));
-        return Response.status(200).entity(Objects.requireNonNullElse(s, null)).build();
+        return Response.status(200).entity(Objects.requireNonNullElse(s, "null")).build();
 
     }
 
@@ -110,8 +110,12 @@ public class SensorResource {
         try {
             JSONObject object = new JSONObject(jsonInput);
             Measurement m = new Measurement(
-                    object.getString("parameter"),
-                    object.getDouble("value"));
+                    object.getInt("temperature"),
+                    object.getInt("pressure"),
+                    object.getInt("humidity"),
+                    object.getInt("co"),
+                    object.getInt("no2"),
+                    object.getInt("so2"));
 
             status = storeMeasurement(username, m);
             LOGGER.info(String.format("Uspješno pohranjeno mjerenje %s za senzor %s", m, username));

@@ -20,7 +20,7 @@ public class BooleanWriter implements MessageBodyWriter<Boolean> {
 
     private static byte[] toData(Boolean b) {
         return b == null ? null :
-                new JSONObject().append("status", Boolean.valueOf(b ? "true" : "false"))
+                new JSONObject().putOnce("status", Boolean.valueOf(b ? "true" : "false"))
                         .toString().getBytes(StandardCharsets.UTF_8);
     }
 
