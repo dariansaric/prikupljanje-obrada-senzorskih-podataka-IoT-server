@@ -15,10 +15,13 @@ import java.util.Objects;
 import static darian.saric.rasus.model.Storage.*;
 
 /**
- * Root resource (exposed at "myresource" path)
+ * Resurs koji poslužuje REST zahtjeve
  */
 @Path("sensor")
 public class SensorResource {
+    /**
+     * Objekt za bilježenje sistemskih zapisa (logova)
+     */
     private static final Logger LOGGER = LogManager.getLogger(SensorResource.class);
 
     /**
@@ -56,10 +59,16 @@ public class SensorResource {
             return Response.status(200).entity(status).build();
         }
 
-        return Response.status(200).entity(status).build();
-//        throw new UnsupportedOperationException();
+        return Response.status(201).entity(status).build();
     }
 
+    /**
+     * Deregistrira senzor za zadani username. Vraća 200 (OK) ako je senzor uspješno deregistriran.
+     *
+     * @param username korisničko ime senzora
+     *
+     * @return status uspješnosti deregistracije
+     */
     @Path("/{username}")
     @DELETE
     public Response deregisterRemoteSensor(@PathParam("username") final String username) {
@@ -71,9 +80,13 @@ public class SensorResource {
             return Response.status(404).build();
         }
 
-        deregisterSensor(s);
-        LOGGER.info(String.format("Uspješno deregistriran %s", s));
-        return Response.status(200).build();
+        if (deregisterSensor(s)) {
+            LOGGER.info(String.format("Uspješno deregistriran %s", s));
+            return Response.status(200).build();
+        }
+
+        LOGGER.info(String.format("Neuspješno deregistriran %s", s));
+        return Response.status(500).build();
     }
 
     /**
@@ -104,7 +117,7 @@ public class SensorResource {
         Sensor s = getSensorForName(username);
         if (s == null) {
             LOGGER.info("Ne postoji registriran senzor imena '" + username + "'");
-            return Response.status(200).entity(status).build();
+            return Response.status(404).entity(status).build();
         }
 
         try {
@@ -122,9 +135,9 @@ public class SensorResource {
         } catch (Exception e) {
             //neispravan json mjerenja
             LOGGER.info(String.format("Neispravni podaci mjerenja: %s", jsonInput));
-            return Response.status(200).entity(status).build();
+            return Response.status(400).entity(status).build();
         }
 
-        return Response.status(200).entity(status).build();
+        return Response.status(201).entity(status).build();
     }
 }
