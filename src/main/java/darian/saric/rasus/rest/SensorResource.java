@@ -62,8 +62,8 @@ public class SensorResource {
 
     @Path("/{username}")
     @DELETE
-    public Response deregisterNewSensor(@PathParam("username") final String username) {
-        LOGGER.info("GET /central/sensor/" + username);
+    public Response deregisterRemoteSensor(@PathParam("username") final String username) {
+        LOGGER.info("DELETE /central/sensor/" + username);
         Sensor s = getSensorForName(username);
 
         if (s == null) {
