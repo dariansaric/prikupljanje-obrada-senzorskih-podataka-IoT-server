@@ -104,27 +104,27 @@ public class SensorResource {
         Sensor s = getSensorForName(username);
         if (s == null) {
             LOGGER.info("Ne postoji registriran senzor imena '" + username + "'");
-            return Response.status(200).entity(JSONObject.wrap(status)).build();
+            return Response.status(200).entity(status).build();
         }
 
         try {
-            JSONObject object = new JSONObject(jsonInput);
+            JSONObject o = new JSONObject(jsonInput);
             Measurement m = new Measurement(
-                    object.getInt("temperature"),
-                    object.getInt("pressure"),
-                    object.getInt("humidity"),
-                    object.getInt("co"),
-                    object.getInt("no2"),
-                    object.getInt("so2"));
-
+                    o.has("temperature") ? o.getInt("temperature") : null,
+                    o.has("pressure") ? o.getInt("pressure") : null,
+                    o.has("humidity") ? o.getInt("humidity") : null,
+                    o.has("co") ? o.getInt("co") : null,
+                    o.has("no2") ? o.getInt("no2") : null,
+                    o.has("so2") ? o.getInt("so2") : null
+            );
             status = storeMeasurement(username, m);
             LOGGER.info(String.format("Uspješno pohranjeno mjerenje %s za senzor %s", m, username));
         } catch (Exception e) {
             //neispravan json mjerenja
             LOGGER.info(String.format("Neispravni podaci mjerenja: %s", jsonInput));
-            return Response.status(200).entity(JSONObject.wrap(status)).build();
+            return Response.status(200).entity(status).build();
         }
 
-        return Response.status(200).entity(JSONObject.wrap(status)).build();
+        return Response.status(200).entity(status).build();
     }
 }
