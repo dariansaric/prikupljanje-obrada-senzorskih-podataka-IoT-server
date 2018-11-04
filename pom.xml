@@ -28,20 +28,22 @@
                 <version>9.4.12.v20180830</version>
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <reload>manual</reload>
                     <webApp>
                         <contextPath>/central</contextPath>
                     </webApp>
                 </configuration>
             </plugin>
+
             <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-compiler-plugin</artifactId>-->
-                <!--<version>2.5.1</version>-->
-                <!--<inherited>true</inherited>-->
-                <!--<configuration>-->
-                    <!--<source>1.7</source>-->
-                    <!--<target>1.7</target>-->
-                <!--</configuration>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-compiler-plugin</artifactId>-->
+            <!--<version>2.5.1</version>-->
+            <!--<inherited>true</inherited>-->
+            <!--<configuration>-->
+            <!--<source>1.7</source>-->
+            <!--<target>1.7</target>-->
+            <!--</configuration>-->
             <!--</plugin>-->
         </plugins>
     </build>
@@ -117,7 +119,7 @@
         <!--&lt;!&ndash; use the following artifactId if you don't need servlet 2.x compatibility &ndash;&gt;-->
         <!--&lt;!&ndash; artifactId>jersey-container-servlet</artifactId &ndash;&gt;-->
         <!--</dependency>-->
-       <!--uncomment this to get JSON support-->
+        <!--uncomment this to get JSON support-->
         <!--<dependency>-->
         <!--<groupId>org.glassfish.jersey.media</groupId>-->
         <!--<artifactId>jersey-media-moxy</artifactId>-->
@@ -127,13 +129,6 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20180813</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.6</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
